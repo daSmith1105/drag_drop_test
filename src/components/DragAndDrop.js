@@ -7,11 +7,11 @@ class DragAndDrop extends React.Component {
 
     this.state = {
       tasks: [
-        {name: 'Block 1', category: 'wip', bgcolor: 'yellow'},
-        {name: 'Block 2', category: 'wip', bgcolor: 'pink'},
-        {name: 'Block 3', category: 'wip', bgcolor: 'skyblue'},
-        {name: 'Block 4', category: 'wip', bgcolor: 'lightgreen'},
-        {name: 'Block 5', category: 'wip', bgcolor: 'white'}
+        {name: 'Block 1', category: 'new', position: 1, bgcolor: 'yellow'},
+        {name: 'Block 2', category: 'new', position: 2, bgcolor: 'pink'},
+        {name: 'Block 3', category: 'new', position: 3, bgcolor: 'skyblue'},
+        {name: 'Block 4', category: 'new', position: 4, bgcolor: 'lightgreen'},
+        {name: 'Block 5', category: 'new', position: 5, bgcolor: 'white'}
       ]
     }
   }
@@ -20,39 +20,45 @@ class DragAndDrop extends React.Component {
     e.preventDefault();
   }
 
-  onDragStart = (e, id) => {
-    console.log('dragstart: ', id);
-    e.dataTransfer.setData("id", id);
+  onDragStart = (e, obj) => {
+    // convert the object into a string
+    let o = JSON.stringify(obj);
+    console.log(o)
+    // set the string in dataTransfer
+    e.dataTransfer.setData("obj", o);
   }
 
-  onDrop = (e, cat) => {
-    console.log(e)
-    let id = e.dataTransfer.getData("id");
+  onDrop = (e, cat, pos) => {
+    // pull the dragged object dataTransfer and convert back to object literal from string
+    let obj = JSON.parse(e.dataTransfer.getData("obj"));
+    let p = pos ? obj.position = pos : obj.position;
 
+    console.log(obj)
+    
     let tasks = this.state.tasks.filter( task => {
-      if (task.name === id) {
+      if (task.name === obj.name) {
         task.category = cat;
+        task.position = p;
       };
       return task;
     });
-
     this.setState({
-      ...this.state, tasks
+      ...this.state,
+      tasks
     })
   }
 
   render() {
     const tasks = {
+      new: [],
       wip: [],
       complete: []
     };
 
-    // sort order is determined by the order the state objects are pushe to the tasks array
-
     this.state.tasks.forEach( t => {
       tasks[t.category].push(
         <div  key={t.name}
-              onDragStart={ e => this.onDragStart(e, t.name) }
+              onDragStart={ e => this.onDragStart(e, t )}
               draggable
               className="draggable"
               style={{backgroundColor: t.bgcolor}} >
@@ -63,19 +69,36 @@ class DragAndDrop extends React.Component {
     return (
       <div className="container-drag">
         <h1 className="header">Drag and Drop</h1>
+
+
+        <div  className="new"
+              onDragOver={ e => this.onDragOver(e) } 
+              onDrop={ e => this.onDrop(e, "new") } >
+          <span className="task-header">Tasks</span>
+
+          {tasks.new}
+
+        </div>
+
         <div  className="wip"
               onDragOver={ e => this.onDragOver(e) } 
               onDrop={ e => this.onDrop(e, "wip") } >
-          <span className="task-header">WIP</span>
+          <span className="task-header">In Progress</span>
+
           {tasks.wip}
+
         </div>
         
         <div  className="droppable" 
               onDragOver={ e => this.onDragOver(e) } 
               onDrop={ e => this.onDrop(e, "complete") } >
-          <span className="task-header">COMPLETED</span>
+
+          <span className="task-header">Completed</span>
+
           {tasks.complete}
+
         </div>
+
       </div>
     )
   }

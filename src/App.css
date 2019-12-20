@@ -11,13 +11,27 @@
 .task-header {
   font-size: 20px;
   font-weight: bold;
+  padding: 40px;
+}
+
+.new {
+  width: 300px;
+  position: absolute;
+  top: 60px;
+  left: 20px;
+  background-color: lightgrey;
+  padding-top: 10px;
+  padding-bottom: 30px;
+  height: 100vh;
 }
 
 .wip {
   width: 300px;
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 60px;
+  left: 0;
+  right: 0;
+  margin: auto;
   background-color: lightgrey;
   padding-top: 10px;
   padding-bottom: 30px;
@@ -27,7 +41,7 @@
 .droppable {
   width: 300px;
   position: absolute;
-  top:20px;
+  top:60px;
   right: 20px;
   background-color: lightgrey;
   padding-top: 10px;
