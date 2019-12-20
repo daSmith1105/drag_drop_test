@@ -114,7 +114,7 @@ class DragAndDrop extends React.Component {
               onDrop={ e => this.onDrop(e, "wip", 0) } >
           <span className="task-header">In Progress</span>
 
-          {tasks.wip}
+          {tasks.wip.sort( (a,b) => a.name > b.name ? 1 : -1)}
 
         </div>
         
